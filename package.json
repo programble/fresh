@@ -1,0 +1,29 @@
+{
+  "name": "fresh",
+  "version": "0.0.0",
+  "description": "Random password reset automation",
+  "main": "index.js",
+  "dependencies": {
+    "oauth": "^0.9.14"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/programble/fresh.git"
+  },
+  "keywords": [
+    "random",
+    "password",
+    "reset",
+    "automation"
+  ],
+  "author": "Curtis McEnroe <curtis@cmcenroe.me> (https://cmcenroe.me)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/programble/fresh/issues"
+  },
+  "homepage": "https://github.com/programble/fresh#readme"
+}
