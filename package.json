@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/programble/fresh/issues"
   },
-  "homepage": "https://github.com/programble/fresh#readme"
+  "homepage": "https://github.com/programble/fresh#readme",
+  "engines": {
+    "node": "^5.0.0"
+  }
 }
