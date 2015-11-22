@@ -8,6 +8,6 @@ let gmail = require('../lib/gmail')
 
 let auth = oauth.authorize();
 let unread = auth.then(gmail.listUnread);
-let messages = Promise.join(auth, unread, gmail.getMessages);
+let messages = auth.then(auth => unread.map(m => gmail.getMessage(auth, m)));
 
 messages.then(console.log);
