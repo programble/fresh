@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 
-let auth = require('../lib/auth')
+let oauth = require('../lib/oauth')
 
-auth.authorize()
-  .return(auth.client)
+oauth.authorize()
   .then(console.log);
