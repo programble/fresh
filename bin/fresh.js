@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 'use strict';
 
+let Promise = require('bluebird');
+
 let oauth = require('../lib/oauth')
 let gmail = require('../lib/gmail')
 
-oauth.authorize()
-  .then(gmail.listUnread)
-  .then(console.log);
+let auth = oauth.authorize();
+let unread = auth.then(gmail.listUnread);
+let messages = Promise.join(auth, unread, gmail.getMessages);
+
+messages.then(console.log);
