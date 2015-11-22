@@ -4,7 +4,7 @@
   "description": "Random password reset automation",
   "main": "index.js",
   "dependencies": {
-    "oauth": "^0.9.14"
+    "googleapis": "^2.1.6"
   },
   "devDependencies": {},
   "scripts": {
