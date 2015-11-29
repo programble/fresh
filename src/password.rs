@@ -72,9 +72,9 @@ mod tests {
     #[test]
     fn test_dummy() {
         let mut gen = super::DummyGen::default();
-        assert_eq!("a", gen.generate(1));
-        assert_eq!("aa", gen.generate(2));
-        assert_eq!("aaa", gen.generate(3));
+        for n in 1..33 {
+            assert_eq!(n, gen.generate(n).len());
+        }
     }
 
     #[test]
