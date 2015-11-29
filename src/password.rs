@@ -80,7 +80,7 @@ mod tests {
     #[test]
     fn test_base64() {
         let mut gen = super::Base64Gen::default();
-        for n in 1..6 {
+        for n in 1..33 {
             assert_eq!(n, gen.generate(n).len());
         }
     }
