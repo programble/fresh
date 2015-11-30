@@ -4,5 +4,6 @@ version = "0.1.0"
 authors = ["Curtis McEnroe <programble@gmail.com>"]
 
 [dependencies]
+inth-oauth2 = "0.2.1"
 rand = "0.3.12"
 rustc-serialize = "0.3.16"
