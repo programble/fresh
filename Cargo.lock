@@ -2,7 +2,7 @@
 name = "fresh"
 version = "0.1.0"
 dependencies = [
- "inth-oauth2 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "inth-oauth2 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.12 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustc-serialize 0.3.16 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -86,7 +86,7 @@ dependencies = [
 
 [[package]]
 name = "inth-oauth2"
-version = "0.2.1"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "chrono 0.2.17 (registry+https://github.com/rust-lang/crates.io-index)",
