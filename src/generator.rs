@@ -1,6 +1,6 @@
 //! Password generators.
 
-use std::iter::{self, FromIterator};
+use std::iter;
 use rand::{self, Rng};
 use rustc_serialize::hex::ToHex;
 use rustc_serialize::base64::{self, ToBase64};
@@ -17,7 +17,7 @@ pub struct Char(pub char);
 
 impl Generator for Char {
     fn generate(&self, length: usize) -> String {
-        String::from_iter(iter::repeat(self.0).take(length))
+        iter::repeat(self.0).take(length).collect()
     }
 }
 
@@ -27,7 +27,7 @@ pub struct Str(pub String);
 
 impl Generator for Str {
     fn generate(&self, length: usize) -> String {
-        String::from_iter(self.0.chars().cycle().take(length))
+        self.0.chars().cycle().take(length).collect()
     }
 }
 
