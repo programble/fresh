@@ -1,3 +1,5 @@
+//! fresh.
+
 #![warn(
     missing_docs,
     missing_debug_implementations,
@@ -10,7 +12,6 @@
     variant_size_differences
 )]
 
-extern crate inth_oauth2;
 extern crate rand;
 extern crate rustc_serialize;
 

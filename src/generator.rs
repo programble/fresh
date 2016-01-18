@@ -12,29 +12,19 @@ pub trait Generator {
 }
 
 /// Generates passwords filled with a single character.
+///
+/// Only suitable for testing.
 #[derive(Debug)]
 pub struct Char(pub char);
-
 impl Generator for Char {
     fn generate(&self, length: usize) -> String {
         iter::repeat(self.0).take(length).collect()
     }
 }
 
-/// Generates passwords filled with a repeating string.
-#[derive(Debug)]
-pub struct Str(pub String);
-
-impl Generator for Str {
-    fn generate(&self, length: usize) -> String {
-        self.0.chars().cycle().take(length).collect()
-    }
-}
-
 /// Generates random hexadecimal passwords.
 #[derive(Debug)]
 pub struct Hex;
-
 impl Generator for Hex {
     fn generate(&self, length: usize) -> String {
         let bytes = (length + 1) / 2;
@@ -48,12 +38,9 @@ impl Generator for Hex {
 }
 
 /// Generates random base64 passwords.
+// FIXME: New rustc_serialize release will allow deriving Debug.
+#[allow(missing_debug_implementations)]
 pub struct Base64(pub base64::Config);
-
-impl Default for Base64 {
-    fn default() -> Self { Base64(base64::URL_SAFE) }
-}
-
 impl Generator for Base64 {
     fn generate(&self, length: usize) -> String {
         let bytes = length * 4 / 3;
@@ -65,10 +52,13 @@ impl Generator for Base64 {
         base64
     }
 }
+impl Default for Base64 {
+    fn default() -> Self { Base64(base64::URL_SAFE) }
+}
 
 #[cfg(test)]
 mod tests {
-    use super::{Generator, Char, Str, Hex, Base64};
+    use super::{Generator, Char, Hex, Base64};
 
     fn test_length<G: Generator>(gen: G) {
         for n in 1..33 {
@@ -79,11 +69,6 @@ mod tests {
     #[test]
     fn test_char_length() {
         test_length(Char('a'));
-    }
-
-    #[test]
-    fn test_str_length() {
-        test_length(Str(String::from("foo")));
     }
 
     #[test]
