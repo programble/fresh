@@ -14,7 +14,7 @@ pub trait Generator {
 /// Generates passwords filled with a single character.
 ///
 /// Only suitable for testing.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Char(pub char);
 impl Generator for Char {
     fn generate(&self, length: usize) -> String {
@@ -23,7 +23,7 @@ impl Generator for Char {
 }
 
 /// Generates random hexadecimal passwords.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Hex;
 impl Generator for Hex {
     fn generate(&self, length: usize) -> String {
@@ -40,6 +40,7 @@ impl Generator for Hex {
 /// Generates random base64 passwords.
 // FIXME: New rustc_serialize release will allow deriving Debug.
 #[allow(missing_debug_implementations)]
+#[derive(Clone)]
 pub struct Base64(pub base64::Config);
 impl Generator for Base64 {
     fn generate(&self, length: usize) -> String {
