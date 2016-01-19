@@ -1,11 +1,7 @@
-use std::io::Read;
+use hyper::Client;
 
-use hyper::{self, Client};
-use hyper::header::ContentType;
-use scraper::{Html, Selector};
-use url::form_urlencoded;
-
-use super::{Account, StatusError, MarkupError, AccountError};
+use super::{Account, AccountError};
+use super::helpers;
 
 /// A Hacker News account.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -14,55 +10,28 @@ pub struct HackerNews {
     pub username: String,
 }
 
-const INPUT_FNID_STR: &'static str = r#"input[name="fnid"]"#;
+const LOGIN_URL: &'static str = "https://news.ycombinator.com/login";
+const FORGOT_URL: &'static str = "https://news.ycombinator.com/forgot";
+const X_URL: &'static str = "https://news.ycombinator.com/x";
 
-lazy_static! {
-    static ref INPUT_FNID: Selector = Selector::parse(INPUT_FNID_STR).unwrap();
-}
+const INPUT_FNID: &'static str = r#"input[name="fnid"]"#;
 
 impl Account for HackerNews {
     fn login_url(&self) -> String {
-        String::from("https://news.ycombinator.com/login")
+        String::from(LOGIN_URL)
     }
 
     fn initiate_reset(&self, client: &Client) -> Result<(), AccountError> {
-        let request = client.get("https://news.ycombinator.com/forgot");
-        let mut response = try!(request.send());
-        if response.status != hyper::Ok {
-            return Err(StatusError(response.status).into());
-        }
+        let mut response = try!(helpers::get_ok(client, FORGOT_URL));
+        let html = try!(helpers::read_to_html(&mut response));
+        let fnid = try!(helpers::select_attr(FORGOT_URL, &html, INPUT_FNID, "value"));
 
-        let mut body = String::new();
-        try!(response.read_to_string(&mut body));
-        let html = Html::parse_document(&body);
-
-        let input_fnid = try! {
-            html.select(&INPUT_FNID)
-                .next()
-                .ok_or_else(|| MarkupError::MissingElement(String::from(INPUT_FNID_STR)))
-        };
-        let fnid = try! {
-            input_fnid
-                .value()
-                .as_element()
-                .and_then(|e| e.attr("value"))
-                .ok_or_else(|| MarkupError::MissingAttr(String::from("value")))
-        };
-
-        let body_pairs = vec![
+        let body_pairs = [
             ("fnop", "forgot-password"),
             ("fnid", fnid),
             ("s", &self.username),
         ];
-        let body = form_urlencoded::serialize(body_pairs);
-
-        let request = client.post("https://news.ycombinator.com/x")
-            .header(ContentType::form_url_encoded())
-            .body(&body);
-        let response = try!(request.send());
-        if response.status != hyper::Ok {
-            return Err(StatusError(response.status).into());
-        }
+        try!(helpers::post_ok(client, X_URL, &body_pairs));
         Ok(())
     }
 }

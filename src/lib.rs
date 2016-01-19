@@ -12,8 +12,6 @@
 )]
 
 extern crate hyper;
-#[macro_use]
-extern crate lazy_static;
 extern crate rand;
 extern crate rustc_serialize;
 extern crate scraper;
