@@ -8,11 +8,16 @@
     unused_extern_crates,
     unused_import_braces,
     unused_qualifications,
-    unused_results,
     variant_size_differences
 )]
 
+extern crate hyper;
+#[macro_use]
+extern crate lazy_static;
 extern crate rand;
 extern crate rustc_serialize;
+extern crate scraper;
+extern crate url;
 
 pub mod generator;
+pub mod account;
