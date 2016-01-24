@@ -12,10 +12,13 @@
 )]
 
 extern crate hyper;
+extern crate inth_oauth2;
 extern crate rand;
 extern crate rustc_serialize;
 extern crate scraper;
 extern crate url;
+extern crate yup_oauth2;
 
-pub mod generator;
 pub mod account;
+pub mod auth;
+pub mod generator;
