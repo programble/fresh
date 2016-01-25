@@ -35,25 +35,31 @@ impl Authenticator for SimpleAuthenticator {
 #[derive(Debug)]
 pub struct TokenCache<A: Authenticator> {
     client: Client<Google>,
+    scope: String,
     token: Option<Bearer<Expiring>>,
     authenticator: PhantomData<A>,
 }
 
 impl<A: Authenticator> TokenCache<A> {
     /// Creates a token cache.
-    pub fn new(client: Client<Google>, token: Option<Bearer<Expiring>>) -> Self {
+    pub fn new<S>(
+        client: Client<Google>,
+        scope: S,
+        token: Option<Bearer<Expiring>>
+    ) -> Self where S: AsRef<str> {
         TokenCache {
             client: client,
+            scope: scope.as_ref().to_owned(),
             token: token,
             authenticator: PhantomData,
         }
     }
 
     /// Returns a valid token from cache, by refreshing, or through the `Authenticator`.
-    pub fn token(&mut self, scope: &str) -> Result<&Bearer<Expiring>, ClientError> {
+    pub fn token(&mut self) -> Result<&Bearer<Expiring>, ClientError> {
         let token = match self.token.take() {
             Some(token) => try!(self.client.ensure_token(token)),
-            None => try!(A::authenticate(&self.client, scope)),
+            None => try!(A::authenticate(&self.client, &self.scope)),
         };
         self.token = Some(token);
         Ok(self.token.as_ref().unwrap())
@@ -61,16 +67,10 @@ impl<A: Authenticator> TokenCache<A> {
 }
 
 impl<A: Authenticator> yup_oauth2::GetToken for TokenCache<A> {
-    fn token<'b, I, T>(&mut self, scopes: I) -> Result<yup_oauth2::Token, Box<Error>>
+    fn token<'b, I, T>(&mut self, _scopes: I) -> Result<yup_oauth2::Token, Box<Error>>
         where T: AsRef<str> + Ord + 'b, I: IntoIterator<Item=&'b T>
     {
-        let scopes_vec = scopes.into_iter()
-            .map(AsRef::as_ref)
-            .collect::<Vec<_>>();
-        let scope = scopes_vec.join(" ");
-
-        let token = try!(self.token(&scope));
-
+        let token = try!(self.token());
         Ok(yup_oauth2::Token {
             access_token: token.access_token().to_owned(),
             refresh_token: token.lifetime().refresh_token().to_owned(),
