@@ -20,5 +20,5 @@ extern crate url;
 extern crate yup_oauth2;
 
 pub mod account;
-pub mod auth;
+pub mod authenticator;
 pub mod generator;
