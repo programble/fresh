@@ -27,7 +27,7 @@ impl<A: Authenticator<Google>> Inbox<A> {
 
     /// Finds the first message in the inbox matching a query.
     pub fn find(&self, q: &str) -> Result<Option<Message>, Error> {
-        let (_, response) = try! {
+        let (_, list) = try! {
             self.gmail.users()
                 .messages_list("me")
                 .add_label_ids("INBOX")
@@ -35,8 +35,19 @@ impl<A: Authenticator<Google>> Inbox<A> {
                 .q(q)
                 .doit()
         };
-        let message = response.messages.and_then(|v| v.into_iter().next());
-        Ok(message)
+
+        let partial = match list.messages.and_then(|v| v.into_iter().next()) {
+            Some(m) => m,
+            None => return Ok(None),
+        };
+
+        let (_, full) = try! {
+            self.gmail.users()
+                .messages_get("me", partial.id.as_ref().unwrap())
+                .doit()
+        };
+
+        Ok(Some(full))
     }
 
     /// Marks as read and archives a message.
