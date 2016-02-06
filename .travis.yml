@@ -9,3 +9,4 @@ os:
 matrix:
   allow_failures:
     - rust: nightly
+    - os: osx # Byron/yup-oauth2#16
