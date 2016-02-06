@@ -37,12 +37,22 @@ impl<A: Authenticator<Google>> TokenCache<A> {
         }
     }
 
+    /// Performs initial authentication through the `Authenticator`.
+    ///
+    /// Does nothing if already authenticated.
+    pub fn authenticate(&mut self) -> Result<(), ClientError> {
+        if self.token.is_some() { return Ok(()); }
+        let token = try!(A::authenticate(&self.oauth2, &self.http, &self.scope));
+        self.token = Some(token);
+        Ok(())
+    }
+
     /// Returns a valid token either from cache, by refreshing, or through the `Authenticator`.
     pub fn token(&mut self) -> Result<&<Google as Provider>::Token, ClientError> {
-        let token = match self.token.take() {
-            Some(token) => try!(self.oauth2.ensure_token(&self.http, token)),
-            None => try!(A::authenticate(&self.oauth2, &self.http, &self.scope)),
-        };
+        if self.token.is_none() {
+            try!(self.authenticate());
+        }
+        let token = try!(self.oauth2.ensure_token(&self.http, self.token.take().unwrap()));
         self.token = Some(token);
         Ok(self.token.as_ref().unwrap())
     }
