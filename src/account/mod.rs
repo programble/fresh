@@ -1,7 +1,7 @@
 //! Accounts for which passwords can be reset.
 
 use google_gmail1::Message;
-use hyper::Client;
+use hyper::Client as HttpClient;
 
 /// An account whose password can be reset.
 pub trait Account {
@@ -9,7 +9,7 @@ pub trait Account {
     type ResetKey;
 
     /// Initiates the password reset flow, usually through a "forgot password" form.
-    fn initiate_reset(&self, client: &Client) -> Result<(), AccountError>;
+    fn initiate_reset(&self, http: &HttpClient) -> Result<(), AccountError>;
 
     /// Returns a Gmail search query for password reset emails.
     fn gmail_query(&self) -> String;

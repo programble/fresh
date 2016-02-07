@@ -1,5 +1,5 @@
 use google_gmail1::Message;
-use hyper::Client;
+use hyper::Client as HttpClient;
 
 use super::{Account, AccountError};
 use super::helpers;
@@ -20,8 +20,8 @@ const INPUT_FNID: &'static str = r#"input[name="fnid"]"#;
 impl Account for HackerNews {
     type ResetKey = ();
 
-    fn initiate_reset(&self, client: &Client) -> Result<(), AccountError> {
-        let mut response = try!(helpers::get_ok(client, FORGOT_URL));
+    fn initiate_reset(&self, http: &HttpClient) -> Result<(), AccountError> {
+        let mut response = try!(helpers::get_ok(http, FORGOT_URL));
         let html = try!(helpers::read_to_html(&mut response));
         let fnid = try!(helpers::select_attr(FORGOT_URL, &html, INPUT_FNID, "value"));
 
@@ -30,7 +30,7 @@ impl Account for HackerNews {
             ("fnid", fnid),
             ("s", &self.username),
         ];
-        try!(helpers::post_ok(client, X_URL, &body_pairs));
+        try!(helpers::post_ok(http, X_URL, &body_pairs));
         Ok(())
     }
 
