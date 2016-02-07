@@ -34,4 +34,8 @@ impl Account for HackerNews {
         try!(helpers::post_ok(client, X_URL, &body_pairs));
         Ok(())
     }
+
+    fn gmail_query(&self) -> String {
+        String::from("from:(hn@ycombinator.com) subject:(Hacker News Password Recovery)")
+    }
 }

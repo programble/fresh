@@ -9,6 +9,9 @@ pub trait Account {
 
     /// Initiates the password reset flow, usually through a "forgot password" form.
     fn initiate_reset(&self, client: &Client) -> Result<(), AccountError>;
+
+    /// Returns a Gmail search query for password reset emails.
+    fn gmail_query(&self) -> String;
 }
 
 pub use self::error::AccountError;
