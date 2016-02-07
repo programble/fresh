@@ -1,3 +1,4 @@
+use google_gmail1::Message;
 use hyper::Client;
 
 use super::{Account, AccountError};
@@ -17,9 +18,7 @@ const X_URL: &'static str = "https://news.ycombinator.com/x";
 const INPUT_FNID: &'static str = r#"input[name="fnid"]"#;
 
 impl Account for HackerNews {
-    fn login_url(&self) -> String {
-        String::from(LOGIN_URL)
-    }
+    type ResetKey = ();
 
     fn initiate_reset(&self, client: &Client) -> Result<(), AccountError> {
         let mut response = try!(helpers::get_ok(client, FORGOT_URL));
@@ -37,5 +36,17 @@ impl Account for HackerNews {
 
     fn gmail_query(&self) -> String {
         String::from("from:(hn@ycombinator.com) subject:(Hacker News Password Recovery)")
+    }
+
+    fn parse_message(&self, _message: &Message) -> Result<(), AccountError> {
+        unimplemented!()
+    }
+
+    fn set_password(&self, _key: &(), _password: String) -> Result<(), AccountError> {
+        unimplemented!()
+    }
+
+    fn login_url(&self) -> String {
+        String::from(LOGIN_URL)
     }
 }
