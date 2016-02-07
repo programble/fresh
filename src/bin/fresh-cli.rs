@@ -1,10 +1,16 @@
 #[macro_use(crate_version)]
 extern crate clap;
+extern crate xdg;
+
+use std::path::PathBuf;
 
 use clap::{App, AppSettings, Arg, SubCommand};
+use xdg::BaseDirectories;
 
 fn main() {
-    let m = App::new("Fresh CLI")
+    let xdg = BaseDirectories::with_prefix("fresh").unwrap();
+
+    let matches = App::new("Fresh CLI")
         .about("Random password reset automation")
         .version(crate_version!())
         .setting(AppSettings::SubcommandRequiredElseHelp)
@@ -38,5 +44,11 @@ fn main() {
 
         .get_matches();
 
-    println!("{:#?}", m);
+    let (subcommand, sub_matches) = matches.subcommand();
+    let sub_matches = sub_matches.unwrap();
+
+    let token_path = matches.value_of("token")
+        .or(sub_matches.value_of("token"))
+        .map(PathBuf::from)
+        .unwrap_or(xdg.place_config_file("token.json").unwrap());
 }
