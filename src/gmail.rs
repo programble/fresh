@@ -6,6 +6,7 @@ use std::time::Duration;
 use google_gmail1::{Gmail, Error, Message, ModifyMessageRequest};
 use hyper::Client as HttpClient;
 use inth_oauth2::provider::Google;
+use rustc_serialize::base64::FromBase64;
 
 use authenticator::Authenticator;
 use token_cache::TokenCache;
@@ -89,5 +90,28 @@ impl<A: Authenticator<Google>> Inbox<A> {
             .add_scope(Scope::Modify)
             .doit()
             .and(Ok(()))
+    }
+}
+
+/// Message extension methods.
+pub trait MessageExt {
+    /// Returns the HTML contents of the message.
+    fn get_html_content(&self) -> Option<String>;
+}
+
+impl MessageExt for Message {
+    fn get_html_content(&self) -> Option<String> {
+        self.payload.as_ref()
+            .and_then(|container| container.parts.as_ref())
+            .map(|parts| parts.iter())
+            .and_then(|mut iter| {
+                iter.find(|part| {
+                    part.mime_type.as_ref().map_or(false, |t| t == "text/html")
+                })
+            })
+            .and_then(|part| part.body.as_ref())
+            .and_then(|body| body.data.as_ref())
+            .and_then(|data| data.from_base64().ok())
+            .and_then(|bytes| String::from_utf8(bytes).ok())
     }
 }
