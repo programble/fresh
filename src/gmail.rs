@@ -1,5 +1,8 @@
 //! Gmail inbox.
 
+use std::thread;
+use std::time::Duration;
+
 use google_gmail1::{Gmail, Error, Message, ModifyMessageRequest};
 use hyper::Client as HttpClient;
 use inth_oauth2::provider::Google;
@@ -48,6 +51,23 @@ impl<A: Authenticator<Google>> Inbox<A> {
         };
 
         Ok(Some(full))
+    }
+
+    /// Finds the first message in the inbox matching a query, retrying with delay.
+    pub fn find_retry(
+        &self,
+        q: &str,
+        tries: u32,
+        delay: Duration
+    ) -> Result<Option<Message>, Error> {
+        for _ in 0..tries {
+            let message = try!(self.find(q));
+            if message.is_some() {
+                return Ok(message);
+            }
+            thread::sleep(delay);
+        }
+        Ok(None)
     }
 
     /// Marks as read and archives a message.
