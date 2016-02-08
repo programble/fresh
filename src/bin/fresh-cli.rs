@@ -7,6 +7,7 @@ extern crate xdg;
 
 use std::io;
 use std::path::PathBuf;
+use std::time::Duration;
 
 use clap::{App, AppSettings, Arg, SubCommand};
 use fresh::authenticator::Authenticator;
@@ -77,10 +78,29 @@ fn main() {
         )
         .get_matches();
 
-    let (subcommand, sub_matches) = matches.subcommand();
-    let sub_matches = sub_matches.unwrap();
+    let (account_type, account_matches) = matches.subcommand();
+    let account_matches = account_matches.unwrap();
 
     let token_path = matches.value_of("token_path")
         .map(PathBuf::from)
         .unwrap_or(xdg.place_config_file("token.json").unwrap());
+
+    let gen_type = matches.value_of("generator").unwrap_or("base64");
+
+    let length = matches.value_of("length")
+        .map(|n| n.parse().unwrap())
+        .unwrap_or(32);
+
+    let tries = matches.value_of("tries")
+        .map(|n| n.parse().unwrap())
+        .unwrap_or(30);
+
+    let delay = Duration::from_secs(
+        matches.value_of("delay")
+            .map(|n| n.parse().unwrap())
+            .unwrap_or(1)
+    );
+
+    let archive = !matches.is_present("no_archive");
+    let open = matches.is_present("open");
 }
