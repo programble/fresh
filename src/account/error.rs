@@ -4,6 +4,7 @@ use std::error::Error;
 use std::fmt::{Display, Formatter, Error as FmtError};
 use std::io;
 
+use google_gmail1;
 use hyper;
 use hyper::status::StatusCode;
 
@@ -103,9 +104,34 @@ impl Error for MarkupError {
     }
 }
 
+/// A Gmail message error.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum MessageError {
+    /// No message matched the query.
+    Missing(String),
+}
+
+impl Display for MessageError {
+    fn fmt(&self, f: &mut Formatter) -> Result<(), FmtError> {
+        match *self {
+            MessageError::Missing(ref q) => {
+                write!(f, "missing message matching query '{}'", q)
+            },
+        }
+    }
+}
+
+impl Error for MessageError {
+    fn description(&self) -> &str {
+        match *self {
+            MessageError::Missing(_) => "missing message",
+        }
+    }
+}
+
 macro_rules! error_enum {
     (
-        #[$meta:meta]
+        $(#[$meta:meta])+
         pub enum $ident:ident {
             $(
                 #[$vmeta:meta]
@@ -113,7 +139,7 @@ macro_rules! error_enum {
             )+
         }
     ) => {
-        #[$meta]
+        $(#[$meta])+
         #[derive(Debug)]
         pub enum $ident {
             $(
@@ -156,6 +182,7 @@ macro_rules! error_enum {
 
 error_enum! {
     /// An error that can occur during the password reset flow.
+    #[allow(variant_size_differences)]
     pub enum AccountError {
         /// An IO error.
         Io(io::Error),
@@ -163,10 +190,16 @@ error_enum! {
         /// A Hyper error.
         Hyper(hyper::Error),
 
+        /// A Gmail error.
+        Gmail(google_gmail1::Error),
+
         /// An unexpected status error.
         Status(StatusError),
 
         /// An unexpected markup error.
         Markup(MarkupError),
+
+        /// A Gmail message error.
+        Message(MessageError),
     }
 }

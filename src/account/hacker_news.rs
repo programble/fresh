@@ -42,7 +42,12 @@ impl Account for HackerNews {
         unimplemented!()
     }
 
-    fn set_password(&self, _key: &(), _password: String) -> Result<(), AccountError> {
+    fn set_password(
+        &self,
+        _http: &HttpClient,
+        _key: &(),
+        _password: &str
+    ) -> Result<(), AccountError> {
         unimplemented!()
     }
 
