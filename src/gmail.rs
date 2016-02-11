@@ -16,6 +16,8 @@ pub use google_gmail1::Scope;
 #[allow(missing_debug_implementations)]
 pub struct Inbox<A: Authenticator<Google>> {
     gmail: Gmail<HttpClient, TokenCache<A>>,
+    find_tries: u32,
+    find_delay: Duration,
 }
 
 impl<A: Authenticator<Google>> Inbox<A> {
@@ -25,11 +27,18 @@ impl<A: Authenticator<Google>> Inbox<A> {
     pub fn new(http: HttpClient, token_cache: TokenCache<A>) -> Self {
         Inbox {
             gmail: Gmail::new(http, token_cache),
+            find_tries: 1,
+            find_delay: Duration::new(0, 0),
         }
     }
 
-    /// Finds the first message in the inbox matching a query.
-    pub fn find(&self, q: &str) -> Result<Option<Message>, Error> {
+    /// Sets the number of tries and delay between tries for `find`.
+    pub fn retry(&mut self, tries: u32, delay: Duration) {
+        self.find_tries = tries;
+        self.find_delay = delay;
+    }
+
+    fn _find(&self, q: &str) -> Result<Option<Message>, Error> {
         let (_, list) = try! {
             self.gmail.users()
                 .messages_list("me")
@@ -54,18 +63,14 @@ impl<A: Authenticator<Google>> Inbox<A> {
     }
 
     /// Finds the first message in the inbox matching a query, retrying with delay.
-    pub fn find_retry(
-        &self,
-        q: &str,
-        tries: u32,
-        delay: Duration
-    ) -> Result<Option<Message>, Error> {
-        for _ in 0..tries {
+    pub fn find(&self, q: &str) -> Result<Option<Message>, Error> {
+        for _ in 0..self.find_tries {
             let message = try!(self.find(q));
             if message.is_some() {
                 return Ok(message);
             }
-            thread::sleep(delay);
+            // FIXME: no sleep on last iteration.
+            thread::sleep(self.find_delay);
         }
         Ok(None)
     }
