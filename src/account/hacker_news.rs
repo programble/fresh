@@ -1,7 +1,11 @@
 use google_gmail1::Message;
 use hyper::Client as HttpClient;
+use inth_oauth2::provider::Google;
 
+use authenticator::Authenticator;
+use gmail::Inbox;
 use super::{Account, AccountError};
+use super::error::MessageError;
 use super::helpers;
 
 /// A Hacker News account.
@@ -16,6 +20,9 @@ const FORGOT_URL: &'static str = "https://news.ycombinator.com/forgot";
 const X_URL: &'static str = "https://news.ycombinator.com/x";
 
 const INPUT_FNID: &'static str = r#"input[name="fnid"]"#;
+
+const GMAIL_QUERY: &'static str =
+    "from:(hn@ycombinator.com) subject:(Hacker News Password Recovery)";
 
 impl Account for HackerNews {
     type ResetKey = ();
@@ -34,8 +41,14 @@ impl Account for HackerNews {
         Ok(())
     }
 
-    fn gmail_query(&self) -> String {
-        String::from("from:(hn@ycombinator.com) subject:(Hacker News Password Recovery)")
+    fn find_message<A: Authenticator<Google>>(
+        &self,
+        inbox: &Inbox<A>
+    ) -> Result<Message, AccountError> {
+        match try!(inbox.find(GMAIL_QUERY)) {
+            Some(m) => Ok(m),
+            None => Err(MessageError::Missing(String::from(GMAIL_QUERY)).into()),
+        }
     }
 
     fn parse_message(&self, _message: &Message) -> Result<(), AccountError> {
