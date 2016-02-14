@@ -22,6 +22,7 @@ extern crate yup_oauth2;
 
 pub mod account;
 pub mod authenticator;
+pub mod credentials;
 pub mod generator;
 pub mod gmail;
 pub mod token_cache;
