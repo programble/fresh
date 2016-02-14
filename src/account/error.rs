@@ -109,6 +109,9 @@ impl Error for MarkupError {
 pub enum MessageError {
     /// No message matched the query.
     Missing(String),
+
+    /// No message part of type.
+    MissingPart(String),
 }
 
 impl Display for MessageError {
@@ -116,6 +119,9 @@ impl Display for MessageError {
         match *self {
             MessageError::Missing(ref q) => {
                 write!(f, "missing message matching query '{}'", q)
+            },
+            MessageError::MissingPart(ref t) => {
+                write!(f, "missing message part of type '{}'", t)
             },
         }
     }
@@ -125,6 +131,7 @@ impl Error for MessageError {
     fn description(&self) -> &str {
         match *self {
             MessageError::Missing(_) => "missing message",
+            MessageError::MissingPart(_) => "missing message part",
         }
     }
 }
