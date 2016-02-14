@@ -3,6 +3,7 @@
 use std::error::Error;
 use std::fmt::{Display, Formatter, Error as FmtError};
 use std::io;
+use std::string::FromUtf8Error;
 
 use google_gmail1;
 use hyper;
@@ -192,6 +193,9 @@ error_enum! {
     /// An error that can occur during the password reset flow.
     #[allow(variant_size_differences)]
     pub enum AccountError {
+        /// A UTF-8 error.
+        Utf8(FromUtf8Error),
+
         /// An IO error.
         Io(io::Error),
 
