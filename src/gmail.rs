@@ -65,7 +65,7 @@ impl<A: Authenticator<Google>> Inbox<A> {
     /// Finds the first message in the inbox matching a query, retrying with delay.
     pub fn find(&self, q: &str) -> Result<Option<Message>, Error> {
         for i in (0..self.find_tries).rev() {
-            let message = try!(self.find(q));
+            let message = try!(self._find(q));
             if message.is_some() {
                 return Ok(message);
             }
