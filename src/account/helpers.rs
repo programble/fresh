@@ -8,10 +8,11 @@ use hyper::header::ContentType;
 use hyper::status::StatusCode;
 use inth_oauth2::provider::Google;
 use scraper::{Html, Selector, NodeRef};
+use rustc_serialize::base64::FromBase64;
 use url::form_urlencoded;
 
 use authenticator::Authenticator;
-use gmail::Inbox;
+use gmail::{Inbox, MessageExt};
 use super::error::{AccountError, StatusError, MarkupError, MessageError};
 
 /// Performs a `GET` request and returns `Err` if the response status is not `200 OK`.
@@ -83,4 +84,18 @@ pub fn inbox_find<A: Authenticator<Google>>(
         Some(m) => Ok(m),
         None => Err(MessageError::Missing(String::from(q)).into()),
     }
+}
+
+/// Finds a message part and decodes it.
+pub fn decode_part(message: &Message, mime_type: &str) -> Result<String, AccountError> {
+    let data = message.find_part_by_type(mime_type)
+        .and_then(|p| p.body.as_ref())
+        .and_then(|b| b.data.as_ref());
+    let data = match data {
+        Some(d) => d,
+        None => return Err(MessageError::MissingPart(String::from(mime_type)).into()),
+    };
+    let bytes = try!(data.from_base64());
+    let string = try!(String::from_utf8(bytes));
+    Ok(string)
 }
