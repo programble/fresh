@@ -2,13 +2,17 @@
 
 use std::io::Read;
 
+use google_gmail1::Message;
 use hyper::client::{Client, Response};
 use hyper::header::ContentType;
 use hyper::status::StatusCode;
+use inth_oauth2::provider::Google;
 use scraper::{Html, Selector, NodeRef};
 use url::form_urlencoded;
 
-use super::error::{AccountError, StatusError, MarkupError};
+use authenticator::Authenticator;
+use gmail::Inbox;
+use super::error::{AccountError, StatusError, MarkupError, MessageError};
 
 /// Performs a `GET` request and returns `Err` if the response status is not `200 OK`.
 pub fn get_ok(client: &Client, url: &str) -> Result<Response, AccountError> {
@@ -68,4 +72,15 @@ pub fn select_attr<'a>(
         .as_element()
         .and_then(|e| e.attr(attr))
         .ok_or_else(|| MarkupError::missing_attr(url, selector, attr).into())
+}
+
+/// Finds an inbox message, or returns `Err`.
+pub fn inbox_find<A: Authenticator<Google>>(
+    inbox: &Inbox<A>,
+    q: &str
+) -> Result<Message, AccountError> {
+    match try!(inbox.find(q)) {
+        Some(m) => Ok(m),
+        None => Err(MessageError::Missing(String::from(q)).into()),
+    }
 }

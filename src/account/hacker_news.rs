@@ -5,7 +5,6 @@ use inth_oauth2::provider::Google;
 use authenticator::Authenticator;
 use gmail::Inbox;
 use super::{Account, AccountError};
-use super::error::MessageError;
 use super::helpers;
 
 /// A Hacker News account.
@@ -45,10 +44,7 @@ impl Account for HackerNews {
         &self,
         inbox: &Inbox<A>
     ) -> Result<Message, AccountError> {
-        match try!(inbox.find(GMAIL_QUERY)) {
-            Some(m) => Ok(m),
-            None => Err(MessageError::Missing(String::from(GMAIL_QUERY)).into()),
-        }
+        helpers::inbox_find(inbox, GMAIL_QUERY)
     }
 
     fn parse_message(&self, _message: &Message) -> Result<(), AccountError> {
