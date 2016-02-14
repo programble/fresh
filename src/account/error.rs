@@ -7,6 +7,7 @@ use std::io;
 use google_gmail1;
 use hyper;
 use hyper::status::StatusCode;
+use rustc_serialize::base64::FromBase64Error;
 
 /// An unexpected HTTP status code.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -193,6 +194,9 @@ error_enum! {
     pub enum AccountError {
         /// An IO error.
         Io(io::Error),
+
+        /// A base64 error.
+        Base64(FromBase64Error),
 
         /// A Hyper error.
         Hyper(hyper::Error),
