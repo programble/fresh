@@ -104,13 +104,21 @@ pub trait MessageExt {
 
 impl MessageExt for Message {
     fn find_part_by_type(&self, mime_type: &str) -> Option<&MessagePart> {
-        self.payload.as_ref()
-            .and_then(|payload| payload.parts.as_ref())
-            .map(|parts| parts.iter())
-            .and_then(|mut iter| {
-                iter.find(|part| {
-                    part.mime_type.as_ref().map_or(false, |t| t == mime_type)
+        let is_payload = self.payload.as_ref()
+            .and_then(|payload| payload.mime_type.as_ref())
+            .map_or(false, |t| t == mime_type);
+
+        if is_payload {
+            self.payload.as_ref()
+        } else {
+            self.payload.as_ref()
+                .and_then(|payload| payload.parts.as_ref())
+                .map(|parts| parts.iter())
+                .and_then(|mut iter| {
+                    iter.find(|part| {
+                        part.mime_type.as_ref().map_or(false, |t| t == mime_type)
+                    })
                 })
-            })
+        }
     }
 }
