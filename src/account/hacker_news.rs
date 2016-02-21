@@ -1,12 +1,10 @@
 use google_gmail1::Message;
 use hyper::Client as HttpClient;
 use inth_oauth2::provider::Google;
-use regex::Regex;
 
 use authenticator::Authenticator;
 use gmail::Inbox;
 use super::{Account, AccountError};
-use super::error::MessageError;
 use super::helpers;
 
 /// A Hacker News account.
@@ -52,15 +50,9 @@ impl Account for HackerNews {
     }
 
     fn parse_message(&self, message: &Message) -> Result<String, AccountError> {
-        let re = Regex::new(FNID_REGEX).unwrap();
         let body = try!(helpers::decode_part(message, "text/plain"));
-
-        let captures = match re.captures(&body) {
-            Some(c) => c,
-            None => return Err(MessageError::Regex(String::from(FNID_REGEX)).into()),
-        };
+        let captures = try!(helpers::regex_captures(FNID_REGEX, &body));
         let fnid = captures.at(1).unwrap();
-
         Ok(String::from(fnid))
     }
 

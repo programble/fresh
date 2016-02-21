@@ -8,6 +8,7 @@ use hyper::header::ContentType;
 use hyper::status::StatusCode;
 use inth_oauth2::provider::Google;
 use scraper::{Html, Selector, NodeRef};
+use regex::{Regex, Captures};
 use rustc_serialize::base64::FromBase64;
 use url::form_urlencoded;
 
@@ -98,4 +99,13 @@ pub fn decode_part(message: &Message, mime_type: &str) -> Result<String, Account
     let bytes = try!(data.from_base64());
     let string = try!(String::from_utf8(bytes));
     Ok(string)
+}
+
+/// Finds regex captures in a string.
+pub fn regex_captures<'t>(regex: &str, input: &'t str) -> Result<Captures<'t>, AccountError> {
+    let re = Regex::new(regex).unwrap();
+    match re.captures(input) {
+        Some(c) => Ok(c),
+        None => Err(MessageError::Regex(String::from(regex)).into()),
+    }
 }
