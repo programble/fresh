@@ -1,5 +1,7 @@
 //! Accounts for which passwords can be reset.
 
+use std::fmt::Debug;
+
 use google_gmail1::Message;
 use hyper::Client as HttpClient;
 use inth_oauth2::provider::Google;
@@ -10,7 +12,7 @@ use gmail::Inbox;
 /// An account whose password can be reset.
 pub trait Account {
     /// Information required to set the account password.
-    type ResetKey;
+    type ResetKey: Debug;
 
     /// Initiates the password reset flow, usually through a "forgot password" form.
     fn initiate_reset(&self, http: &HttpClient) -> Result<(), AccountError>;

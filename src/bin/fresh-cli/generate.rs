@@ -5,6 +5,6 @@ pub fn password(gen_type: &str, length: usize) -> String {
         "char" => Char::default().generate(length),
         "hex" => Hex::default().generate(length),
         "base64" => Base64::default().generate(length),
-        _ => panic!("invalid generator type {}", gen_type),
+        _ => unreachable!(),
     }
 }

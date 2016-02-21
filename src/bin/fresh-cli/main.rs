@@ -22,6 +22,7 @@ use std::time::Duration;
 use clap::{App, AppSettings, Arg, SubCommand};
 use fresh::gmail::Inbox;
 
+mod account;
 mod authenticator;
 mod generate;
 mod token_cache;
@@ -58,9 +59,9 @@ fn main() {
                 .long("no-archive")
                 .help("Do not archive password reset message"),
 
-            Arg::with_name("open")
-                .long("open").short("o")
-                .help("Open login page after reset"),
+            Arg::with_name("verbose")
+                .long("verbose").short("V")
+                .help("Verbose output"),
         ])
         .subcommand(
             SubCommand::with_name("hackernews")
@@ -68,6 +69,8 @@ fn main() {
                 .arg(Arg::with_name("username").required(true).help("Username"))
         )
         .get_matches();
+
+    let verbose = matches.is_present("verbose");
 
     let token_path = matches.value_of("token_path")
         .map(PathBuf::from)
@@ -88,7 +91,12 @@ fn main() {
     );
 
     let archive = !matches.is_present("no_archive");
-    let open = matches.is_present("open");
+
+    let (account_type, account_matches) = matches.subcommand();
+    let account_user = match account_type {
+        "hackernews" => account_matches.unwrap().value_of("username").unwrap(),
+        _ => unreachable!(),
+    };
 
     let mut token_cache = token_cache::load(&token_path);
     token_cache.authenticate().unwrap();
@@ -98,4 +106,6 @@ fn main() {
     inbox.retry(tries, delay);
 
     let password = generate::password(gen_type, length);
+
+    account::reset_password(account_type, account_user, &inbox, &password, archive, verbose);
 }
