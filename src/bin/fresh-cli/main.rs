@@ -16,6 +16,7 @@ extern crate inth_oauth2;
 extern crate xdg;
 
 mod authenticator;
+mod generate;
 
 fn main() {
 }
