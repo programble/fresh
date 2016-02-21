@@ -3,6 +3,10 @@ authors = ["Curtis McEnroe <programble@gmail.com>"]
 name = "fresh"
 version = "0.1.0"
 
+[[bin]]
+name = "fresh-cli"
+path = "src/bin/fresh-cli/main.rs"
+
 [dependencies]
 clap = "2.0.5"
 google-gmail1 = "0.1.11"
