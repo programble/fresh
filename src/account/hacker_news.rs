@@ -1,6 +1,7 @@
 use google_gmail1::Message;
 use hyper::Client as HttpClient;
 use inth_oauth2::provider::Google;
+use url::Url;
 
 use authenticator::Authenticator;
 use gmail::Inbox;
@@ -17,6 +18,7 @@ pub struct HackerNews {
 const LOGIN_URL: &'static str = "https://news.ycombinator.com/login";
 const FORGOT_URL: &'static str = "https://news.ycombinator.com/forgot";
 const X_URL: &'static str = "https://news.ycombinator.com/x";
+const R_URL: &'static str = "https://news.ycombinator.com/r";
 
 const INPUT_FNID: &'static str = r#"input[name="fnid"]"#;
 
@@ -58,11 +60,28 @@ impl Account for HackerNews {
 
     fn set_password(
         &self,
-        _http: &HttpClient,
-        _key: &String,
-        _password: &str
+        http: &HttpClient,
+        key: &String,
+        password: &str
     ) -> Result<(), AccountError> {
-        unimplemented!()
+        let mut url = Url::parse(X_URL).unwrap();
+        url.set_query_from_pairs(&[
+            ("fnop", "passwd-reset"),
+            ("fnid", key),
+        ]);
+        let url = url.serialize();
+
+        let mut response = try!(helpers::get_ok(http, &url));
+        let html = try!(helpers::read_to_html(&mut response));
+        let fnid = try!(helpers::select_attr(&url, &html, INPUT_FNID, "value"));
+
+        let body_pairs = [
+            ("fnop", "changepw-page"),
+            ("fnid", fnid),
+            ("pw", password),
+        ];
+        try!(helpers::post_ok(http, R_URL, &body_pairs));
+        Ok(())
     }
 
     fn login_url(&self) -> String {
