@@ -13,10 +13,12 @@ extern crate clap;
 extern crate fresh;
 extern crate hyper;
 extern crate inth_oauth2;
+extern crate rustc_serialize;
 extern crate xdg;
 
 mod authenticator;
 mod generate;
+mod token_cache;
 
 fn main() {
 }
