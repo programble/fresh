@@ -38,9 +38,7 @@ impl Generator for Hex {
 }
 
 /// Generates random base64 passwords.
-// FIXME: New rustc_serialize release will allow deriving Debug.
-#[allow(missing_debug_implementations)]
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Base64(pub base64::Config);
 impl Generator for Base64 {
     fn generate(&self, length: usize) -> String {
