@@ -1,5 +1,5 @@
 use std::fs::File;
-use std::io::{Read, ErrorKind};
+use std::io::{Read, Write, ErrorKind};
 use std::path::{PathBuf, Path};
 
 use fresh::credentials::{CLIENT_ID, CLIENT_SECRET};
@@ -39,4 +39,11 @@ pub fn load(path: &Path) -> TokenCache<Prompt> {
         String::from(Scope::Modify.as_ref()),
         token,
     )
+}
+
+pub fn save(token_cache: &mut TokenCache<Prompt>, path: &Path) {
+    let token = token_cache.token().unwrap();
+    let json = json::encode(token).unwrap();
+    let mut file = File::create(path).unwrap();
+    file.write_all(json.as_bytes()).unwrap();
 }
