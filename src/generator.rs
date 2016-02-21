@@ -6,7 +6,7 @@ use rustc_serialize::hex::ToHex;
 use rustc_serialize::base64::{self, ToBase64};
 
 /// Variable-length password generator.
-pub trait Generator {
+pub trait Generator: Default {
     /// Generate a password of the desired length.
     fn generate(&self, length: usize) -> String;
 }
@@ -21,9 +21,12 @@ impl Generator for Char {
         iter::repeat(self.0).take(length).collect()
     }
 }
+impl Default for Char {
+    fn default() -> Self { Char('a') }
+}
 
 /// Generates random hexadecimal passwords.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct Hex;
 impl Generator for Hex {
     fn generate(&self, length: usize) -> String {
