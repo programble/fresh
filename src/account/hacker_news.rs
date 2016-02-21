@@ -25,7 +25,7 @@ const INPUT_FNID: &'static str = r#"input[name="fnid"]"#;
 const GMAIL_QUERY: &'static str =
     "from:(hn@ycombinator.com) subject:(Hacker News Password Recovery)";
 
-const FNID_REGEX: &'static str = "fnid=([A-Za-z1-9]+)";
+const FNID_REGEX: &'static str = "fnid=([A-Za-z0-9]+)";
 
 impl Account for HackerNews {
     type ResetKey = String;
