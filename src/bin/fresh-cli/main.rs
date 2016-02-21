@@ -53,6 +53,14 @@ fn main() {
             Arg::with_name("delay")
                 .long("delay").value_name("SECS")
                 .help("Delay between inbox query retries [1]"),
+
+            Arg::with_name("no_archive")
+                .long("no-archive")
+                .help("Do not archive password reset message"),
+
+            Arg::with_name("open")
+                .long("open").short("o")
+                .help("Open login page after reset"),
         ])
         .subcommand(
             SubCommand::with_name("hackernews")
@@ -78,6 +86,9 @@ fn main() {
             .map(|n| n.parse().unwrap())
             .unwrap_or(1)
     );
+
+    let archive = !matches.is_present("no_archive");
+    let open = matches.is_present("open");
 
     let mut token_cache = token_cache::load(&token_path);
     token_cache.authenticate().unwrap();
