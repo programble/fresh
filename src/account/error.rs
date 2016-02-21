@@ -114,6 +114,9 @@ pub enum MessageError {
 
     /// No message part of type.
     MissingPart(String),
+
+    /// Could not parse message with regex.
+    Regex(String),
 }
 
 impl Display for MessageError {
@@ -125,6 +128,9 @@ impl Display for MessageError {
             MessageError::MissingPart(ref t) => {
                 write!(f, "missing message part of type '{}'", t)
             },
+            MessageError::Regex(ref r) => {
+                write!(f, "could not parse message with '{}'", r)
+            },
         }
     }
 }
@@ -134,6 +140,7 @@ impl Error for MessageError {
         match *self {
             MessageError::Missing(_) => "missing message",
             MessageError::MissingPart(_) => "missing message part",
+            MessageError::Regex(_) => "could not parse message",
         }
     }
 }

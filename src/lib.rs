@@ -15,6 +15,7 @@ extern crate google_gmail1;
 extern crate hyper;
 extern crate inth_oauth2;
 extern crate rand;
+extern crate regex;
 extern crate rustc_serialize;
 extern crate scraper;
 extern crate url;
