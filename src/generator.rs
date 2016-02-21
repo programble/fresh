@@ -6,7 +6,7 @@ use rustc_serialize::hex::ToHex;
 use rustc_serialize::base64::{self, ToBase64};
 
 /// Variable-length password generator.
-pub trait Generator: Default {
+pub trait Generator {
     /// Generate a password of the desired length.
     fn generate(&self, length: usize) -> String;
 }
