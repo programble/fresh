@@ -1,9 +1,9 @@
+use std::io;
+
 use fresh::authenticator::Authenticator;
 use hyper::Client as HttpClient;
 use inth_oauth2::{Client as OAuth2Client, ClientError as OAuth2ClientError};
 use inth_oauth2::provider::Provider;
-
-use std::io;
 
 pub struct Prompt;
 impl<P: Provider> Authenticator<P> for Prompt {
