@@ -16,14 +16,41 @@ use authenticator::Authenticator;
 use gmail::{Inbox, MessageExt};
 use super::error::{AccountError, StatusError, MarkupError, MessageError};
 
-/// Performs a `GET` request and returns `Err` if the response status is not `200 OK`.
-pub fn get_ok(client: &Client, url: &str) -> Result<Response, AccountError> {
+/// Performs a `GET` request and returns `Err` if the response status is not `status`.
+pub fn get_expect(
+    client: &Client,
+    url: &str,
+    status: StatusCode,
+) -> Result<Response, AccountError> {
     let request = client.get(url);
     let response = try!(request.send());
-    if response.status != StatusCode::Ok {
+    if response.status != status {
         return Err(StatusError::new(url, response.status).into());
     }
     Ok(response)
+}
+
+/// Performs a `POST` request and returns `Err` if the response status is not `status`.
+pub fn post_expect(
+    client: &Client,
+    url: &str,
+    body_pairs: &[(&str, &str)],
+    status: StatusCode,
+) -> Result<Response, AccountError> {
+    let body = form_urlencoded::serialize(body_pairs);
+    let request = client.post(url)
+        .header(ContentType::form_url_encoded())
+        .body(&body);
+    let response = try!(request.send());
+    if response.status != status {
+        return Err(StatusError::new(url, response.status).into());
+    }
+    Ok(response)
+}
+
+/// Performs a `GET` request and returns `Err` if the response status is not `200 OK`.
+pub fn get_ok(client: &Client, url: &str) -> Result<Response, AccountError> {
+    get_expect(client, url, StatusCode::Ok)
 }
 
 /// Performs a `POST` request and returns `Err` if the response status is not `200 OK`.
@@ -32,15 +59,7 @@ pub fn post_ok(
     url: &str,
     body_pairs: &[(&str, &str)]
 ) -> Result<Response, AccountError> {
-    let body = form_urlencoded::serialize(body_pairs);
-    let request = client.post(url)
-        .header(ContentType::form_url_encoded())
-        .body(&body);
-    let response = try!(request.send());
-    if response.status != StatusCode::Ok {
-        return Err(StatusError::new(url, response.status).into());
-    }
-    Ok(response)
+    post_expect(client, url, body_pairs, StatusCode::Ok)
 }
 
 /// Parses the body of a response as HTML.
