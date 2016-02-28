@@ -1,4 +1,4 @@
-use fresh::account::{Account, HackerNews};
+use fresh::account::{Account, HackerNews, Lobsters};
 use fresh::gmail::Inbox;
 use hyper::Client as HttpClient;
 
@@ -15,6 +15,13 @@ pub fn reset_password(
     match account_type {
         "hackernews" => account_reset(
             HackerNews { username: String::from(account_user) },
+            inbox,
+            password,
+            archive,
+            verbose,
+        ),
+        "lobsters" => account_reset(
+            Lobsters { email: String::from(account_user) },
             inbox,
             password,
             archive,

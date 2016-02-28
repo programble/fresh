@@ -68,6 +68,11 @@ fn main() {
                 .about("Reset Hacker News password")
                 .arg(Arg::with_name("username").required(true).help("Username"))
         )
+        .subcommand(
+            SubCommand::with_name("lobsters")
+                .about("Reset Lobsters password")
+                .arg(Arg::with_name("email").required(true).help("Email"))
+        )
         .get_matches();
 
     let verbose = matches.is_present("verbose");
@@ -95,6 +100,7 @@ fn main() {
     let (account_type, account_matches) = matches.subcommand();
     let account_user = match account_type {
         "hackernews" => account_matches.unwrap().value_of("username").unwrap(),
+        "lobsters" => account_matches.unwrap().value_of("email").unwrap(),
         _ => unreachable!(),
     };
 

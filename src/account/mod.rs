@@ -51,3 +51,6 @@ pub mod helpers;
 
 pub use self::hacker_news::HackerNews;
 mod hacker_news;
+
+pub use self::lobsters::Lobsters;
+mod lobsters;
