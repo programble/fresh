@@ -1,5 +1,6 @@
 use fresh::account::{Account, HackerNews};
 use fresh::gmail::Inbox;
+use hyper::Client as HttpClient;
 
 use authenticator::Prompt;
 
@@ -30,7 +31,8 @@ fn account_reset<A: Account>(
     archive: bool,
     verbose: bool,
 ) {
-    let http = Default::default();
+    let mut http = HttpClient::default();
+    http.set_redirect_policy(account.redirect_policy());
 
     if verbose { println!("Initiating reset..."); }
     account.initiate_reset(&http).unwrap();
