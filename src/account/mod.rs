@@ -4,6 +4,7 @@ use std::fmt::Debug;
 
 use google_gmail1::Message;
 use hyper::Client as HttpClient;
+use hyper::client::RedirectPolicy;
 use inth_oauth2::provider::Google;
 
 use authenticator::Authenticator;
@@ -36,6 +37,11 @@ pub trait Account {
 
     /// Returns a URL at which the user can log in to the account.
     fn login_url(&self) -> String;
+
+    /// Returns the desired Hyper redirect policy.
+    ///
+    /// Will be set for HTTP clients passed to `initiate_reset` and `set_password`.
+    fn redirect_policy(&self) -> RedirectPolicy { Default::default() }
 }
 
 pub use self::error::AccountError;
