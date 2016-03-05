@@ -2,7 +2,7 @@ use google_gmail1::Message;
 use hyper::Client as HttpClient;
 use hyper::client::RedirectPolicy;
 use hyper::status::StatusCode;
-use inth_oauth2::provider::Google;
+use inth_oauth2::provider::google::Installed;
 use url::Url;
 
 use authenticator::Authenticator;
@@ -48,7 +48,7 @@ impl Account for Lobsters {
         Ok(())
     }
 
-    fn find_message<A: Authenticator<Google>>(
+    fn find_message<A: Authenticator<Installed>>(
         &self,
         inbox: &Inbox<A>,
     ) -> Result<Message, AccountError> {

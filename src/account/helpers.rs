@@ -6,7 +6,7 @@ use google_gmail1::Message;
 use hyper::client::{Client, Response};
 use hyper::header::ContentType;
 use hyper::status::StatusCode;
-use inth_oauth2::provider::Google;
+use inth_oauth2::provider::google::Installed;
 use scraper::{Html, Selector, NodeRef};
 use regex::{Regex, Captures};
 use rustc_serialize::base64::FromBase64;
@@ -96,7 +96,7 @@ pub fn select_attr<'a>(
 }
 
 /// Finds an inbox message, or returns `Err`.
-pub fn inbox_find<A: Authenticator<Google>>(
+pub fn inbox_find<A: Authenticator<Installed>>(
     inbox: &Inbox<A>,
     q: &str
 ) -> Result<Message, AccountError> {

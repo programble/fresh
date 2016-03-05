@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use google_gmail1::{Gmail, Error, Message, MessagePart, ModifyMessageRequest};
 use hyper::Client as HttpClient;
-use inth_oauth2::provider::Google;
+use inth_oauth2::provider::google::Installed;
 
 use authenticator::Authenticator;
 use token_cache::TokenCache;
@@ -14,13 +14,13 @@ pub use google_gmail1::Scope;
 
 /// Gmail inbox client.
 #[allow(missing_debug_implementations)]
-pub struct Inbox<A: Authenticator<Google>> {
+pub struct Inbox<A: Authenticator<Installed>> {
     gmail: Gmail<HttpClient, TokenCache<A>>,
     find_tries: u32,
     find_delay: Duration,
 }
 
-impl<A: Authenticator<Google>> Inbox<A> {
+impl<A: Authenticator<Installed>> Inbox<A> {
     /// Creates a Gmail inbox client.
     ///
     /// `TokenCache::authenticate` should already have been called.

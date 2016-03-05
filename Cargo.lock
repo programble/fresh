@@ -5,7 +5,7 @@ dependencies = [
  "clap 2.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "google-gmail1 0.1.12+20160216 (git+https://github.com/programble/google-apis-rs?branch=pinned-serde)",
  "hyper 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "inth-oauth2 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "inth-oauth2 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand 0.3.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 0.1.55 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustc-serialize 0.3.18 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -257,7 +257,7 @@ dependencies = [
 
 [[package]]
 name = "inth-oauth2"
-version = "0.7.1"
+version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "chrono 0.2.20 (registry+https://github.com/rust-lang/crates.io-index)",

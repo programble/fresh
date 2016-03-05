@@ -5,7 +5,7 @@ use std::fmt::Debug;
 use google_gmail1::Message;
 use hyper::Client as HttpClient;
 use hyper::client::RedirectPolicy;
-use inth_oauth2::provider::Google;
+use inth_oauth2::provider::google::Installed;
 
 use authenticator::Authenticator;
 use gmail::Inbox;
@@ -19,7 +19,7 @@ pub trait Account {
     fn initiate_reset(&self, http: &HttpClient) -> Result<(), AccountError>;
 
     /// Finds a Gmail message that can be parsed into a `ResetKey`.
-    fn find_message<A: Authenticator<Google>>(
+    fn find_message<A: Authenticator<Installed>>(
         &self,
         inbox: &Inbox<A>
     ) -> Result<Message, AccountError>;

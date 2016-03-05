@@ -5,28 +5,29 @@ use std::marker::PhantomData;
 
 use hyper::Client as HttpClient;
 use inth_oauth2::{Client as OAuth2Client, ClientError, Token};
-use inth_oauth2::provider::{Provider, Google};
+use inth_oauth2::provider::Provider;
+use inth_oauth2::provider::google::Installed;
 use yup_oauth2::{GetToken, Token as YupToken};
 
 use authenticator::Authenticator;
 
 /// Token cache for use with Google APIs.
 #[allow(missing_debug_implementations)]
-pub struct TokenCache<A: Authenticator<Google>> {
-    oauth2: OAuth2Client<Google>,
+pub struct TokenCache<A: Authenticator<Installed>> {
+    oauth2: OAuth2Client<Installed>,
     http: HttpClient,
     scope: String,
-    token: Option<<Google as Provider>::Token>,
+    token: Option<<Installed as Provider>::Token>,
     authenticator: PhantomData<A>,
 }
 
-impl<A: Authenticator<Google>> TokenCache<A> {
+impl<A: Authenticator<Installed>> TokenCache<A> {
     /// Creates a token cache.
     pub fn new(
-        oauth2: OAuth2Client<Google>,
+        oauth2: OAuth2Client<Installed>,
         http: HttpClient,
         scope: String,
-        token: Option<<Google as Provider>::Token>
+        token: Option<<Installed as Provider>::Token>
     ) -> Self {
         TokenCache {
             oauth2: oauth2,
@@ -48,7 +49,7 @@ impl<A: Authenticator<Google>> TokenCache<A> {
     }
 
     /// Returns a valid token either from cache, by refreshing, or through the `Authenticator`.
-    pub fn token(&mut self) -> Result<&<Google as Provider>::Token, ClientError> {
+    pub fn token(&mut self) -> Result<&<Installed as Provider>::Token, ClientError> {
         if self.token.is_none() {
             try!(self.authenticate());
         }
@@ -58,7 +59,7 @@ impl<A: Authenticator<Google>> TokenCache<A> {
     }
 }
 
-impl<A: Authenticator<Google>> GetToken for TokenCache<A> {
+impl<A: Authenticator<Installed>> GetToken for TokenCache<A> {
     fn token<'b, I, T>(&mut self, _scopes: I) -> Result<YupToken, Box<Error>>
         where T: AsRef<str> + Ord + 'b, I: IntoIterator<Item=&'b T>
     {
