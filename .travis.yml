@@ -8,5 +8,6 @@ os:
   - osx
 matrix:
   allow_failures:
-    - rust: nightly
+    - rust: beta # whitequark/rust-xdg#13
+    - rust: nightly # whitequark/rust-xdg#13
     - os: osx # Byron/yup-oauth2#16
