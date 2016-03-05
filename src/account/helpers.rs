@@ -7,7 +7,7 @@ use hyper::client::{Client, Response};
 use hyper::header::ContentType;
 use hyper::status::StatusCode;
 use inth_oauth2::provider::google::Installed;
-use scraper::{Html, Selector, NodeRef};
+use scraper::{Html, Selector, ElementRef};
 use regex::{Regex, Captures};
 use rustc_serialize::base64::FromBase64;
 use url::form_urlencoded;
@@ -74,7 +74,7 @@ pub fn select_one<'a>(
     url: &str,
     html: &'a Html,
     selector: &str
-) -> Result<NodeRef<'a>, AccountError> {
+) -> Result<ElementRef<'a>, AccountError> {
     html.select(&Selector::parse(selector).unwrap())
         .next()
         .ok_or_else(|| MarkupError::missing_element(url, selector).into())
@@ -88,10 +88,9 @@ pub fn select_attr<'a>(
     selector: &str,
     attr: &str
 ) -> Result<&'a str, AccountError> {
-    let node = try!(select_one(url, html, selector));
-    node.value()
-        .as_element()
-        .and_then(|e| e.attr(attr))
+    let element = try!(select_one(url, html, selector));
+    element.value()
+        .attr(attr)
         .ok_or_else(|| MarkupError::missing_attr(url, selector, attr).into())
 }
 
