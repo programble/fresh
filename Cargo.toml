@@ -16,7 +16,6 @@ regex = "0.1.52"
 rustc-serialize = "0.3.18"
 scraper = "0.3.1"
 url = "0.5.2"
-yup-oauth2 = "0.5.3"
 
 # Byron/google-apis-rs#148
 [dependencies.google-gmail1]
@@ -29,3 +28,9 @@ branch = "pinned-serde"
 version = "2.0.0"
 git = "https://github.com/programble/rust-xdg"
 branch = "v2.0.0"
+
+# Byron/yup-oauth2#16
+[dependencies.yup-oauth2]
+version = "0.5.5"
+git = "https://github.com/programble/yup-oauth2"
+branch = "pinned-serde"
