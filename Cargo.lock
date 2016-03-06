@@ -11,7 +11,7 @@ dependencies = [
  "rustc-serialize 0.3.18 (registry+https://github.com/rust-lang/crates.io-index)",
  "scraper 0.3.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "url 0.5.5 (registry+https://github.com/rust-lang/crates.io-index)",
- "xdg 2.0.0 (git+https://github.com/programble/rust-xdg?branch=v2.0.0)",
+ "xdg 2.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "yup-oauth2 0.5.5 (git+https://github.com/programble/yup-oauth2?branch=pinned-serde)",
 ]
 
@@ -770,7 +770,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "xdg"
 version = "2.0.0"
-source = "git+https://github.com/programble/rust-xdg?branch=v2.0.0#430483ba74faa31edb5561e985ac45e80a1cd637"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "yup-oauth2"
