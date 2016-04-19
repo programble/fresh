@@ -15,6 +15,9 @@ pub trait Account {
     /// Information required to set the account password.
     type ResetKey: Debug;
 
+    /// Creates an account for a login.
+    fn new(login: String) -> Self;
+
     /// Initiates the password reset flow, usually through a "forgot password" form.
     fn initiate_reset(&self, http: &HttpClient) -> Result<(), AccountError>;
 

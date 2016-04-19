@@ -32,6 +32,10 @@ const TOKEN_REGEX: &'static str = "token=([A-Za-z0-9-]+)";
 impl Account for Lobsters {
     type ResetKey = String;
 
+    fn new(login: String) -> Self {
+        Lobsters { email: login }
+    }
+
     fn initiate_reset(&self, http: &HttpClient) -> Result<(), AccountError> {
         let mut response = try!(helpers::get_ok(http, FORGOT_URL));
         let html = try!(helpers::read_to_html(&mut response));
