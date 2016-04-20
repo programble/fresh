@@ -20,7 +20,7 @@ use std::path::PathBuf;
 use std::time::Duration;
 
 use clap::{App, AppSettings, Arg, SubCommand};
-use fresh::gmail::Inbox;
+use fresh::gmail::InboxBuilder;
 
 mod account;
 mod authenticator;
@@ -108,8 +108,10 @@ fn main() {
     token_cache.authenticate().unwrap();
     token_cache::save(&mut token_cache, &token_path);
 
-    let mut inbox = Inbox::new(Default::default(), token_cache);
-    inbox.retry(tries, delay);
+    let inbox = InboxBuilder::new(token_cache)
+        .find_tries(tries)
+        .find_delay(delay)
+        .finalize();
 
     let password = generate::password(gen_type, length);
 

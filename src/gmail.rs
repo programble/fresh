@@ -12,6 +12,57 @@ use token_cache::TokenCache;
 
 pub use google_gmail1::Scope;
 
+/// Gmail inbox client builder.
+#[allow(missing_debug_implementations)]
+pub struct InboxBuilder<A: Authenticator<Installed>> {
+    token_cache: TokenCache<A>,
+    http_client: Option<HttpClient>,
+    find_tries: Option<u32>,
+    find_delay: Option<Duration>,
+}
+
+impl<A: Authenticator<Installed>> InboxBuilder<A> {
+    /// Creates a Gmail inbox client builder.
+    ///
+    /// `TokenCache::authenticate` should already have been called.
+    pub fn new(token_cache: TokenCache<A>) -> Self {
+        InboxBuilder {
+            token_cache: token_cache,
+            http_client: None,
+            find_tries: None,
+            find_delay: None,
+        }
+    }
+
+    /// Sets the HTTP client.
+    pub fn http_client(mut self, http_client: HttpClient) -> Self {
+        self.http_client = Some(http_client);
+        self
+    }
+
+    /// Sets the number of find tries.
+    pub fn find_tries(mut self, tries: u32) -> Self {
+        self.find_tries = Some(tries);
+        self
+    }
+
+    /// Sets the delay between find tries.
+    pub fn find_delay(mut self, delay: Duration) -> Self {
+        self.find_delay = Some(delay);
+        self
+    }
+
+    /// Creates a Gmail inbox client.
+    pub fn finalize(self) -> Inbox<A> {
+        let http_client = self.http_client.unwrap_or_else(Default::default);
+        Inbox {
+            gmail: Gmail::new(http_client, self.token_cache),
+            find_tries: self.find_tries.unwrap_or(1),
+            find_delay: self.find_delay.unwrap_or(Duration::new(0, 0)),
+        }
+    }
+}
+
 /// Gmail inbox client.
 #[allow(missing_debug_implementations)]
 pub struct Inbox<A: Authenticator<Installed>> {
@@ -23,19 +74,9 @@ pub struct Inbox<A: Authenticator<Installed>> {
 impl<A: Authenticator<Installed>> Inbox<A> {
     /// Creates a Gmail inbox client.
     ///
-    /// `TokenCache::authenticate` should already have been called.
-    pub fn new(http: HttpClient, token_cache: TokenCache<A>) -> Self {
-        Inbox {
-            gmail: Gmail::new(http, token_cache),
-            find_tries: 1,
-            find_delay: Duration::new(0, 0),
-        }
-    }
-
-    /// Sets the number of tries and delay between tries for `find`.
-    pub fn retry(&mut self, tries: u32, delay: Duration) {
-        self.find_tries = tries;
-        self.find_delay = delay;
+    /// Convenience method for `InboxBuilder::new(token_cache).finalize()`.
+    pub fn new(token_cache: TokenCache<A>) -> Self {
+        InboxBuilder::new(token_cache).finalize()
     }
 
     fn _find(&self, q: &str) -> Result<Option<Message>, Error> {
