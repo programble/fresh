@@ -1,4 +1,4 @@
-//! fresh.
+//! Fresh.
 
 #![warn(
     missing_docs,
@@ -10,20 +10,3 @@
     unused_qualifications,
     variant_size_differences
 )]
-
-extern crate google_gmail1;
-extern crate hyper;
-extern crate inth_oauth2;
-extern crate rand;
-extern crate regex;
-extern crate rustc_serialize;
-extern crate scraper;
-extern crate url;
-extern crate yup_oauth2;
-
-pub mod account;
-pub mod authenticator;
-pub mod credentials;
-pub mod generator;
-pub mod gmail;
-pub mod token_cache;
