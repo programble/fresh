@@ -10,3 +10,8 @@
     unused_qualifications,
     variant_size_differences
 )]
+
+extern crate rand;
+extern crate rustc_serialize;
+
+pub mod generator;
