@@ -11,6 +11,16 @@ pub trait Generator {
     fn generate(&self, length: usize) -> String;
 }
 
+/// Instantiates a `Generator` of type `ty`, one of "char", "hex", "base64".
+pub fn instantiate(ty: &str) -> Option<Box<Generator>> {
+    match ty {
+        "char" => Some(Box::new(Char::default())),
+        "hex" => Some(Box::new(Hex)),
+        "base64" => Some(Box::new(Base64::default())),
+        _ => None,
+    }
+}
+
 /// Generates passwords filled with a single character.
 ///
 /// Only suitable for testing.
