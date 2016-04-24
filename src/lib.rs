@@ -11,7 +11,12 @@
     variant_size_differences
 )]
 
+extern crate chrono;
+extern crate hyper;
+extern crate inth_oauth2;
 extern crate rand;
 extern crate rustc_serialize;
+extern crate yup_oauth2;
 
 pub mod generator;
+pub mod token_cache;

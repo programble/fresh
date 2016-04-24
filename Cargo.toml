@@ -4,6 +4,7 @@ name = "fresh"
 version = "0.0.0"
 
 [dependencies]
+chrono = "0.2.21"
 clap = "2.0.5"
 google-gmail1 = "0.1.13"
 hyper = "0.8.0"

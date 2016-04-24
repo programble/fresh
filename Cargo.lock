@@ -2,6 +2,7 @@
 name = "fresh"
 version = "0.0.0"
 dependencies = [
+ "chrono 0.2.21 (registry+https://github.com/rust-lang/crates.io-index)",
  "clap 2.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "google-gmail1 0.1.13+20160316 (registry+https://github.com/rust-lang/crates.io-index)",
  "hyper 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",
