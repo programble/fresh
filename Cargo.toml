@@ -5,6 +5,8 @@ authors = ["Curtis McEnroe <june@causal.agency>"]
 license = "AGPL-3.0-or-later"
 
 [dependencies]
+failure = "0.1.1"
+failure_derive = "0.1.1"
 imap = "0.7.0"
 rand = "0.4.2"
 regex = "0.2.10"
