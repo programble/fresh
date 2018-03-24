@@ -2,15 +2,18 @@
 name = "fresh"
 version = "0.0.0"
 authors = ["Curtis McEnroe <june@causal.agency>"]
-license = "AGPL-3.0-or-later"
+license = "AGPL-3.0"
 
 [dependencies]
 failure = "0.1.1"
 imap = "0.7.0"
 mailparse = "0.6.0"
+native-tls = "0.1.5"
 rand = "0.4.2"
 regex = "0.2.10"
 reqwest = "0.8.5"
 scraper = "0.6.0"
+serde = "1.0.33"
+serde_derive = "1.0.33"
 toml = "0.4.5"
 xdg = "2.1.0"

@@ -12,7 +12,10 @@ pub trait Reset {
     ) -> Result<(), Error>;
 }
 
-pub struct HackerNews<'a>(pub &'a str);
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+pub struct HackerNews<'a> {
+    pub username: &'a str,
+}
 
 impl<'a> Reset for HackerNews<'a> {
     fn send_mail(&self, client: &Client) -> Result<(), Error> {
@@ -32,7 +35,7 @@ impl<'a> Reset for HackerNews<'a> {
         let form = [
             ("fnop", "forgot-password"),
             ("fnid", fnid),
-            ("s", &self.0),
+            ("s", self.username),
         ];
         client.post("https://news.ycombinator.com/x")
             .form(&form)

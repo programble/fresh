@@ -1,10 +1,15 @@
 #[macro_use] extern crate failure;
+#[macro_use] extern crate serde_derive;
+extern crate imap;
 extern crate mailparse;
+extern crate native_tls;
+extern crate rand;
 extern crate reqwest;
 extern crate scraper;
-extern crate rand;
+extern crate serde;
 
 pub mod reset;
+pub mod mail;
 
 pub fn generate_password(len: usize) -> String {
     use rand::distributions::{IndependentSample, Range};
