@@ -19,7 +19,7 @@ xdg = "2.1.0"
 
 [dependencies.imap]
 git = "https://github.com/programble/rust-imap"
-branch = "fresh"
+branch = "fix/borrow-tls"
 
 [dependencies.imap-proto]
 git = "https://github.com/djc/imap-proto"
