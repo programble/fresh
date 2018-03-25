@@ -2,11 +2,12 @@ use failure::Error;
 use reqwest::Client;
 use scraper::{Html, Selector};
 use mailparse::ParsedMail;
+use std::borrow::Cow;
 
 fn _object_safe(_: &Reset) { }
 pub trait Reset {
     fn send_mail(&self, client: &Client) -> Result<(), Error>;
-    fn match_mail(&self, mail: &ParsedMail) -> bool;
+    fn search(&self) -> Cow<str>;
     fn set_password(
         &self, client: &Client, mail: &ParsedMail, password: &str
     ) -> Result<(), Error>;
@@ -44,8 +45,8 @@ impl<'a> Reset for HackerNews<'a> {
         Ok(())
     }
 
-    fn match_mail(&self, _mail: &ParsedMail) -> bool {
-        false
+    fn search(&self) -> Cow<str> {
+        Cow::from("FROM hn@ycombinator.com SUBJECT \"Hacker News Password Recovery\"")
     }
 
     fn set_password(
