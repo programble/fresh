@@ -1,6 +1,7 @@
 #[macro_use] extern crate failure;
 #[macro_use] extern crate serde_derive;
 extern crate imap;
+extern crate imap_proto;
 extern crate mailparse;
 extern crate native_tls;
 extern crate rand;

@@ -17,7 +17,9 @@ serde_derive = "1.0.33"
 toml = "0.4.5"
 xdg = "2.1.0"
 
-# https://github.com/mattnenterprise/rust-imap/pull/66
 [dependencies.imap]
 git = "https://github.com/programble/rust-imap"
-branch = "fix/borrow-tls"
+branch = "fresh"
+
+[dependencies.imap-proto]
+git = "https://github.com/djc/imap-proto"
