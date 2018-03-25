@@ -1,6 +1,7 @@
 use failure::Error;
 use imap::client;
-use imap_proto::{self, Response};
+use imap_proto::{self, Response, AttributeValue};
+use mailparse::{self, ParsedMail};
 use native_tls::{TlsConnector, TlsStream};
 use std::net::TcpStream;
 use std::time::Duration;
@@ -52,5 +53,24 @@ pub fn idle_search(
         } else {
             return Ok(ids);
         }
+    }
+}
+
+pub fn fetch(client: &mut Client, id: u32) -> Result<Vec<u8>, Error> {
+    Ok(client.run_command_and_read_response(&format!("FETCH {} BODY", id))?)
+}
+
+pub fn parse_fetch(fetch: &[u8]) -> Result<ParsedMail, Error> {
+    let fetch = imap_proto::parse_response(fetch).to_result()?;
+    match fetch {
+        Response::Fetch(_, attrs) => {
+            for attr in attrs {
+                if let AttributeValue::Rfc822(Some(data)) = attr {
+                    return Ok(mailparse::parse_mail(data)?);
+                }
+            }
+            Err(format_err!("no rfc822"))
+        },
+        response => Err(format_err!("fetch response {:?}", response)),
     }
 }
