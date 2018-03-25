@@ -20,7 +20,6 @@ pub struct Imap<'a> {
 pub type Client = client::Client<TlsStream<TcpStream>>;
 
 pub fn connect(tls: &TlsConnector, imap: &Imap) -> Result<Client, Error> {
-    let tls = tls.clone(); // FIXME: imap should borrow this.
     let client = client::Client::connect((imap.host, imap.port))?;
     let mut client = client.secure(imap.host, tls)?;
     client.login(imap.username, imap.password)?;
